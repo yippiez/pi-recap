@@ -1,0 +1,30 @@
+{
+  "name": "pi-recap",
+  "version": "0.1.0",
+  "description": "Auto-generate a short Pi session recap after idle unfocused time.",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi",
+    "recap",
+    "summary"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yippiez/pi-recap.git"
+  },
+  "files": [
+    "extensions",
+    "README.md"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  }
+}
