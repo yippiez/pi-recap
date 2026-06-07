@@ -1,6 +1,7 @@
 import { complete } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { SessionEntry } from "@earendil-works/pi-coding-agent";
+import { Text } from "@earendil-works/pi-tui";
 
 const FOCUS_IN = "\x1b[I";
 const FOCUS_OUT = "\x1b[O";
@@ -263,6 +264,16 @@ function installFocusTracking(pi: ExtensionAPI, ctx: ExtensionContext): (() => v
 }
 
 export default function (pi: ExtensionAPI) {
+	pi.registerMessageRenderer(CUSTOM_TYPE, (message, _options, theme) => {
+		const content = typeof message.content === "string"
+			? message.content
+			: message.content
+				.filter((part) => part.type === "text")
+				.map((part) => part.text)
+				.join("\n");
+		return new Text(theme.fg("muted", content), 0, 0);
+	});
+
 	pi.on("session_start", async (_event, ctx) => {
 		clearTimer();
 		state.focused = true;
