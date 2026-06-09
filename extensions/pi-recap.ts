@@ -1,4 +1,7 @@
 import { complete } from "@earendil-works/pi-ai";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { homedir } from "node:os";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { SessionEntry } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
@@ -38,6 +41,23 @@ type TextBlock = {
 	name?: string;
 	arguments?: unknown;
 };
+
+function readRecapSetting(path: string): "on" | "off" | undefined {
+	try {
+		const parsed = JSON.parse(readFileSync(path, "utf8")) as { recap?: unknown };
+		if (parsed.recap === "on" || parsed.recap === true) return "on";
+		if (parsed.recap === "off" || parsed.recap === false) return "off";
+	} catch {
+		return undefined;
+	}
+	return undefined;
+}
+
+function isEnabled(): boolean {
+	const globalSetting = readRecapSetting(join(homedir(), ".pi", "agent", "settings.json"));
+	const projectSetting = readRecapSetting(join(process.cwd(), ".pi", "settings.json"));
+	return (projectSetting ?? globalSetting) !== "off";
+}
 
 const getIdleMs = (): number => {
 	const raw = process.env.PI_RECAP_IDLE_MS;
@@ -176,6 +196,7 @@ async function generateRecap(ctx: ExtensionContext): Promise<string | undefined>
 }
 
 function shouldGenerateRecap(ctx: ExtensionContext, now = Date.now()): boolean {
+	if (!isEnabled()) return false;
 	if (state.focused) return false;
 	if (state.shownThisSession || state.pendingRecap || state.generating) return false;
 	if (ctx.hasPendingMessages() || !ctx.isIdle()) return false;
@@ -239,6 +260,7 @@ function scheduleIdleCheck(pi: ExtensionAPI, ctx: ExtensionContext) {
 }
 
 function installFocusTracking(pi: ExtensionAPI, ctx: ExtensionContext): (() => void) | undefined {
+	if (!isEnabled()) return undefined;
 	if (ctx.mode !== "tui") return undefined;
 	process.stdout.write(ENABLE_FOCUS_EVENTS);
 

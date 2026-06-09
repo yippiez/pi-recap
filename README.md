@@ -11,7 +11,18 @@ Default trigger conditions:
 
 When you return to the terminal, the pending recap is shown in the transcript.
 
-Disable from Pi's `/settings` resource screen.
+Disable by adding `"recap": "off"` to Pi settings. Re-enable with `"recap": "on"` or by removing the setting.
+
+Global settings: `~/.pi/agent/settings.json`
+Project settings: `.pi/settings.json` (overrides global)
+
+Example:
+
+```json
+{
+  "recap": "off"
+}
+```
 
 ## Install
 
