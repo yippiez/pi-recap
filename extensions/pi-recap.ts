@@ -148,7 +148,7 @@ function buildRecapPrompt(entries: readonly SessionEntry[]): string {
 
 	return [
 		"Write exactly one concise Pi recap line for a user returning to a coding session.",
-		"Format exactly: ※ recap: <one sentence or two short sentences> (disable recaps in /settings)",
+		"Format exactly: ※ recap: <one sentence or two short sentences>",
 		"Include goal, current progress/status, important counts, running loops/jobs, and next action if known.",
 		"Do not use markdown lists or headings. Be specific and compact.",
 		"",
@@ -192,7 +192,7 @@ async function generateRecap(ctx: ExtensionContext): Promise<string | undefined>
 		.trim();
 
 	if (!text) return undefined;
-	return text.startsWith("※ recap:") ? text : `※ recap: ${text} (disable recaps in /settings)`;
+	return text.startsWith("※ recap:") ? text : `※ recap: ${text}`;
 }
 
 function shouldGenerateRecap(ctx: ExtensionContext, now = Date.now()): boolean {
@@ -293,7 +293,7 @@ export default function (pi: ExtensionAPI) {
 				.filter((part) => part.type === "text")
 				.map((part) => part.text)
 				.join("\n");
-		return new Text(theme.fg("muted", content), 0, 0);
+		return new Text(theme.fg("muted", ` ${content}`), 0, 0);
 	});
 
 	pi.on("session_start", async (_event, ctx) => {
