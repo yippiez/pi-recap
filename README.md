@@ -1,3 +1,14 @@
+# Moved to pchain
+
+This repository has moved into the pchain monorepo:
+
+- https://github.com/yippiez/pchain
+- Pi implementation: `pchain/pi/`
+
+This repo is kept only for history and compatibility.
+
+---
+
 # pi-recap
 
 Pi extension that auto-generates a one-line recap after you switch away from the terminal and the last completed turn has been idle long enough.
